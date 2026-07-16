@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>البوابة الإلكترونية لنتائج الامتحانات</title>
+    <!-- استيراد خط Tajawal لتطابق تام مع خطوط وزارة التربية الرسمية -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -259,8 +259,10 @@
 
 <div class="container">
     
+    <!-- الكرت الأول: واجهة تسجيل الدخول والاستعلام -->
     <div id="loginCard" class="login-card">
         <div class="logo-area">
+            <!-- شعار جمهورية العراق -->
             <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Coat_of_arms_of_Iraq_%22clean%22.svg" alt="شعار جمهورية العراق">
         </div>
         <h2>نظام استعلام النتائج الرسمية</h2>
@@ -281,8 +283,10 @@
         <div id="errorBox" class="error-message"></div>
     </div>
 
+    <!-- الكرت الثاني: واجهة عرض النتيجة -->
     <div id="resultContainer" class="result-container">
         
+        <!-- القسم العلوي من الشهادة -->
         <div class="header-card">
             <div class="iraq-header">
                 <div class="iraq-title-text">
@@ -333,6 +337,7 @@
             </button>
         </div>
         
+        <!-- القسم السفلي من الشهادة (تفاصيل المواد) -->
         <div class="grades-card">
             <h3>معلومات النتيجة</h3>
             <div class="warning-banner">
@@ -347,7 +352,8 @@
                     </tr>
                 </thead>
                 <tbody id="gradesTableBody">
-                    </tbody>
+                    <!-- سيتم تعبئة الدرجات هنا تلقائياً -->
+                </tbody>
             </table>
         </div>
         
@@ -357,11 +363,10 @@
 
 <script>
     // ========================================================
-    // ⚙️ الإعدادات: يمكنك التحكم ببيانات الطالب ورمز تسجيل الدخول من هنا
+    // ⚙️ تم تعديل بيانات الدخول بناءً على طلبك بنجاح!
     // ========================================================
-    const cardCredential = "162612340240425"»;  // 🔑 ضع رقم البطاقة الذي تريده هنا (مثال: "123")
-    const codeCredential = "253318"
-        ";  // 🔑 ضع الرمز السري الذي تريده هنا (مثال: "456")
+    const cardCredential = "162612340240425";  // رقم البطاقة الخاص بك
+    const codeCredential = "253318";           // الرمز السري الخاص بك
 
     const studentResult = {
         name: "ملك علي صبري هاشم",
@@ -373,7 +378,7 @@
         status: "مكمل",
         subjects: [
             { name: "الاسلامية", grade: 100 },
-            { name: "العربية", grade: 36 },     // مكمل (أقل من 50)
+            { name: "العربية", grade: 36 },     // مكمل
             { name: "الانكليزية", grade: 60 },
             { name: "الاحياء", grade: 95 },
             { name: "الرياضيات", grade: 0 },    // مكمل
@@ -396,4 +401,50 @@
             return;
         }
         
-        // التحقق من صحة الرقم والرمز السري
+        if (cardInput === cardCredential && codeInput === codeCredential) {
+            showResult();
+        } else {
+            errorBox.innerHTML = "عذراً، الرقم الامتحاني أو الرمز السري غير صحيح. يرجى التأكد والمحاولة مجدداً.";
+            errorBox.style.display = 'block';
+        }
+    }
+
+    function showResult() {
+        document.getElementById('loginCard').style.display = 'none';
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.style.display = 'block';
+        
+        document.getElementById('studentName').innerText = studentResult.name;
+        document.getElementById('schoolName').innerText = studentResult.school;
+        document.getElementById('directorate').innerText = studentResult.city;
+        document.getElementById('branch').innerText = studentResult.branch;
+        document.getElementById('totalScore').innerText = studentResult.total;
+        document.getElementById('averageScore').innerText = studentResult.average;
+        document.getElementById('finalStatus').innerText = studentResult.status;
+        
+        const tableBody = document.getElementById('gradesTableBody');
+        tableBody.innerHTML = "";
+        
+        studentResult.subjects.forEach(sub => {
+            const isFailed = sub.grade < 50;
+            const rowClass = isFailed ? 'class="fail-row"' : '';
+            
+            tableBody.innerHTML += `
+                <tr ${rowClass}>
+                    <td class="subject-name">${sub.name}</td>
+                    <td class="grade-value">${sub.grade}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function logout() {
+        document.getElementById('cardNo').value = "";
+        document.getElementById('secretCode').value = "";
+        document.getElementById('resultContainer').style.display = 'none';
+        document.getElementById('loginCard').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
